@@ -1,5 +1,5 @@
 FROM nginx:alpine
 
-COPY . /var/www/bastas
+COPY . /usr/share/nginx/html/
 
 EXPOSE 80
