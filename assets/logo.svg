@@ -1,0 +1,9 @@
+<svg width="220" height="60" viewBox="0 0 220 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g transform="translate(2,4)">
+    <path d="M22 0L40 10.5V31.5L22 42L4 31.5V10.5L22 0Z" fill="#5B1827"/>
+    <path d="M22 7L34 14V28L22 35L10 28V14L22 7Z" stroke="#F5F0E7" stroke-width="2"/>
+    <path d="M22 7V20M10 14L22 20L34 14M22 20L10 28M22 20L34 28" stroke="#F5F0E7" stroke-width="2"/>
+  </g>
+  <text x="57" y="28" fill="#1E1817" font-family="Georgia, serif" font-size="24" letter-spacing="1.5">БАС ТАС</text>
+  <text x="59" y="45" fill="#7C6E66" font-family="Arial, sans-serif" font-size="8.5" letter-spacing="1.5">НАТУРАЛЬНЫЙ КАМЕНЬ</text>
+</svg>
