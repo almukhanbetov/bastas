@@ -1,0 +1,42 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: bastas
+      POSTGRES_PASSWORD: bastas
+      POSTGRES_DB: bastas
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bastas"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    image: ${DOCKERHUB_USERNAME}/bastas-backend:latest
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://bastas:bastas@postgres:5432/bastas?sslmode=disable
+      JWT_SECRET: ${JWT_SECRET}
+    volumes:
+      # фото, загруженные через админку, должны переживать пересоздание контейнера
+      - uploads:/app/uploads
+    ports:
+      - "127.0.0.1:8080:8080"
+
+  frontend:
+    image: ${DOCKERHUB_USERNAME}/bastas-frontend:latest
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "127.0.0.1:3000:80"
+
+volumes:
+  pgdata:
+  uploads:

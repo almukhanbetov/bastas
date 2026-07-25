@@ -1,0 +1,71 @@
+name: Deploy BASTAS to VPS
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Получить код из GitHub
+        uses: actions/checkout@v4
+
+      - name: Войти в Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Собрать и отправить backend image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./backend
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/bastas-backend:latest
+
+      - name: Собрать и отправить frontend image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./frontend
+          push: true
+          # Статический экспорт: пусто = относительные /api/... запросы,
+          # реверс-прокси на VPS должен направлять их на backend (см. README).
+          build-args: |
+            NEXT_PUBLIC_API_URL=
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/bastas-frontend:latest
+
+      - name: Скопировать docker-compose.prod.yml на VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          source: "docker-compose.prod.yml"
+          target: /var/www/bastas
+          strip_components: 0
+
+      - name: Обновить сайт на VPS
+        uses: appleboy/ssh-action@v1.2.0
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          envs: DOCKERHUB_USERNAME,JWT_SECRET
+          script: |
+            cd /var/www/bastas
+            printf 'DOCKERHUB_USERNAME=%s\nJWT_SECRET=%s\n' "$DOCKERHUB_USERNAME" "$JWT_SECRET" > .env
+            docker compose -f docker-compose.prod.yml pull
+            docker compose -f docker-compose.prod.yml up -d postgres
+            until docker compose -f docker-compose.prod.yml exec -T postgres pg_isready -U bastas > /dev/null 2>&1; do sleep 1; done
+            docker compose -f docker-compose.prod.yml run --rm backend ./migrate up
+            docker compose -f docker-compose.prod.yml up -d --force-recreate
+            docker image prune -f

@@ -1,0 +1,10 @@
+.git
+
+README.md
+.DS_Store
+
+# Next.js
+node_modules
+.next
+out
+.env*.local

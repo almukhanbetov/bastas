@@ -1,0 +1,11 @@
+DROP TABLE IF EXISTS leads;
+DROP TYPE IF EXISTS lead_status;
+DROP TYPE IF EXISTS lead_source;
+DROP TABLE IF EXISTS admin_users;
+DROP TABLE IF EXISTS product_types;
+DROP TABLE IF EXISTS stone_catalog;
+DROP TABLE IF EXISTS settings;
+DROP TABLE IF EXISTS service_prices;
+DROP TABLE IF EXISTS edge_types;
+DROP TABLE IF EXISTS thickness_options;
+DROP TABLE IF EXISTS materials;
