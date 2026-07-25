@@ -1,17 +1,13 @@
 name: Deploy BASTAS to VPS
-
 on:
   push:
     branches:
       - main
-
 permissions:
   contents: read
-
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Получить код из GitHub
         uses: actions/checkout@v4
