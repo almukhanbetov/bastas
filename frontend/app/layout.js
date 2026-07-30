@@ -27,6 +27,13 @@ export default function RootLayout({ children }) {
         <Script id="theme-init" strategy="beforeInteractive">
           {THEME_INIT_SCRIPT}
         </Script>
+        <Script async src="https://www.googletagmanager.com/gtag/js?id=AW-18360122017" strategy="afterInteractive" />
+        <Script id="gtag-init" strategy="afterInteractive">
+          {`window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'AW-18360122017');`}
+        </Script>
       </head>
       <body>
         <CartProvider>
