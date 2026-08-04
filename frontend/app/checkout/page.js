@@ -76,9 +76,9 @@ export default function CheckoutPage() {
         })),
       };
 
-      const order = await createOrder(API_URL, payload, loggedIn ? getCustomerToken() : null);
+      await createOrder(API_URL, payload, loggedIn ? getCustomerToken() : null);
       clearCart();
-      router.push(`/order-success/?orderNumber=${encodeURIComponent(order.orderNumber)}`);
+      router.push('/thank-you/');
     } catch (err) {
       setError(err.message);
     } finally {
