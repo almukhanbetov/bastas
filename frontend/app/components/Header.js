@@ -46,7 +46,10 @@ export default function Header() {
           ))}
         </nav>
         <div className="nav-cta">
-          <a className="nav-phone" href="tel:+77014657070">+7 (701) 465 70 70</a>
+          <div className="nav-phones">
+            <a className="nav-phone" href="tel:+77014657070">+7 (701) 465 70 70</a>
+            <a className="nav-phone" href="tel:+77024369056">+7 (702) 436 90 56</a>
+          </div>
           <Link className="btn btn-primary" href="/calculator/">Рассчитать проект</Link>
         </div>
         <Link className="cart-link" href="/cart/" aria-label={`Корзина, ${positionsCount} позиций`}>

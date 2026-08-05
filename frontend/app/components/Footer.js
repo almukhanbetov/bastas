@@ -24,6 +24,7 @@ export default function Footer() {
             <h4>Контакты</h4>
             <div className="footer-links">
               <a href="tel:+77014657070">+7 (701) 465 70 70</a>
+              <a href="tel:+77024369056">+7 (702) 436 90 56</a>
               <a href="mailto:info@bastas.kz">info@bastas.kz</a>
               <span>Алматы, Казахстан</span>
               <Link href="/contacts/">Все контакты →</Link>
