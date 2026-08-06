@@ -1,15 +1,17 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { setCustomerToken } from '@/lib/customerAuth';
 import PasswordField from '../../components/PasswordField';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export default function RegisterPage() {
+function RegisterForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const next = searchParams.get('next') || '/account/';
   const [form, setForm] = useState({ name: '', phone: '', email: '', password: '' });
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -31,7 +33,7 @@ export default function RegisterPage() {
         throw new Error(data?.error || 'Не удалось зарегистрироваться');
       }
       setCustomerToken(data.token);
-      router.push('/account/');
+      router.push(next);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -39,6 +41,44 @@ export default function RegisterPage() {
     }
   };
 
+  return (
+    <form className="calc-form admin-login-form" onSubmit={handleSubmit}>
+      <label className="calc-field">
+        <span>Имя</span>
+        <input value={form.name} onChange={(e) => update('name')(e.target.value)} required autoFocus />
+      </label>
+      <label className="calc-field">
+        <span>Телефон</span>
+        <input
+          type="tel"
+          placeholder="+7 XXX XXX XX XX"
+          value={form.phone}
+          onChange={(e) => update('phone')(e.target.value)}
+          required
+        />
+      </label>
+      <label className="calc-field">
+        <span>Email</span>
+        <input type="email" value={form.email} onChange={(e) => update('email')(e.target.value)} />
+      </label>
+      <PasswordField
+        label="Пароль (минимум 6 символов)"
+        value={form.password}
+        onChange={update('password')}
+        required
+      />
+      {error && <p className="calc-hint calc-hint-warning">{error}</p>}
+      <button type="submit" className="btn btn-primary calc-cta" disabled={submitting}>
+        {submitting ? 'Регистрация…' : 'Зарегистрироваться'}
+      </button>
+      <p className="calc-hint">
+        Уже есть аккаунт? <Link href={`/account/login/?next=${encodeURIComponent(next)}`}>Войти</Link>
+      </p>
+    </form>
+  );
+}
+
+export default function RegisterPage() {
   return (
     <>
       <section className="page-hero page-hero-compact">
@@ -49,39 +89,9 @@ export default function RegisterPage() {
       </section>
       <section className="section">
         <div className="container">
-          <form className="calc-form admin-login-form" onSubmit={handleSubmit}>
-            <label className="calc-field">
-              <span>Имя</span>
-              <input value={form.name} onChange={(e) => update('name')(e.target.value)} required autoFocus />
-            </label>
-            <label className="calc-field">
-              <span>Телефон</span>
-              <input
-                type="tel"
-                placeholder="+7 XXX XXX XX XX"
-                value={form.phone}
-                onChange={(e) => update('phone')(e.target.value)}
-                required
-              />
-            </label>
-            <label className="calc-field">
-              <span>Email</span>
-              <input type="email" value={form.email} onChange={(e) => update('email')(e.target.value)} />
-            </label>
-            <PasswordField
-              label="Пароль (минимум 6 символов)"
-              value={form.password}
-              onChange={update('password')}
-              required
-            />
-            {error && <p className="calc-hint calc-hint-warning">{error}</p>}
-            <button type="submit" className="btn btn-primary calc-cta" disabled={submitting}>
-              {submitting ? 'Регистрация…' : 'Зарегистрироваться'}
-            </button>
-            <p className="calc-hint">
-              Уже есть аккаунт? <Link href="/account/login/">Войти</Link>
-            </p>
-          </form>
+          <Suspense fallback={<p className="calc-hint">Загрузка…</p>}>
+            <RegisterForm />
+          </Suspense>
         </div>
       </section>
     </>

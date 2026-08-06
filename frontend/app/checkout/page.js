@@ -19,15 +19,18 @@ export default function CheckoutPage() {
   const [form, setForm] = useState(initialForm);
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
-  const [loggedIn, setLoggedIn] = useState(false);
+  // null — проверка ещё идёт, true/false — результат. Оформление заказа теперь
+  // требует аккаунт: гостевой чекаут убран, заказ должен быть привязан к покупателю.
+  const [loggedIn, setLoggedIn] = useState(null);
 
-  // Если покупатель уже вошёл в личный кабинет — подставляем его данные
-  // и потом привязываем заказ к аккаунту (см. handleSubmit). Гостевой чекаут
-  // как был без аккаунта, так и остаётся полностью рабочим.
   useEffect(() => {
     const token = getCustomerToken();
-    if (!isTokenValid(token) || API_URL === undefined) return;
+    if (!isTokenValid(token)) {
+      setLoggedIn(false);
+      return;
+    }
     setLoggedIn(true);
+    if (API_URL === undefined) return;
     customerFetch(API_URL, '/api/v1/me')
       .then((me) => {
         setForm((prev) => ({ ...prev, name: me.name, phone: me.phone, email: me.email || '' }));
@@ -76,7 +79,7 @@ export default function CheckoutPage() {
         })),
       };
 
-      await createOrder(API_URL, payload, loggedIn ? getCustomerToken() : null);
+      await createOrder(API_URL, payload, getCustomerToken());
       clearCart();
       router.push('/thank-you/');
     } catch (err) {
@@ -93,16 +96,7 @@ export default function CheckoutPage() {
           <div className="breadcrumb">Главная / Корзина / Оформление заказа</div>
           <h1>Оформление заказа.</h1>
           <p>Оставьте контакты — мы свяжемся для подтверждения расчёта.</p>
-          <p className="calc-hint">
-            {loggedIn ? (
-              'Заказ появится в вашем личном кабинете.'
-            ) : (
-              <>
-                Есть аккаунт? <Link href="/account/login/">Войдите</Link>, чтобы отслеживать заказ в личном
-                кабинете.
-              </>
-            )}
-          </p>
+          {loggedIn && <p className="calc-hint">Заказ появится в вашем личном кабинете.</p>}
         </div>
       </section>
 
@@ -115,7 +109,19 @@ export default function CheckoutPage() {
                 Перейти к калькулятору
               </Link>
             </div>
-          ) : (
+          ) : loggedIn === false ? (
+            <div className="cart-empty">
+              <p>Чтобы оформить заказ, нужно войти в личный кабинет или зарегистрироваться.</p>
+              <div className="hero-actions">
+                <Link className="btn btn-primary" href="/account/login/?next=/checkout/">
+                  Войти
+                </Link>
+                <Link className="btn btn-line" href="/account/register/?next=/checkout/">
+                  Зарегистрироваться
+                </Link>
+              </div>
+            </div>
+          ) : loggedIn === null ? null : (
             <div className="calc-layout">
               <form className="calc-form" onSubmit={handleSubmit}>
                 <div className="calc-row">

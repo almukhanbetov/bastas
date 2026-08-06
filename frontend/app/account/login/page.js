@@ -1,15 +1,17 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { setCustomerToken } from '@/lib/customerAuth';
 import PasswordField from '../../components/PasswordField';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export default function AccountLoginPage() {
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const next = searchParams.get('next') || '/account/';
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -30,7 +32,7 @@ export default function AccountLoginPage() {
         throw new Error(data?.error || 'Не удалось войти');
       }
       setCustomerToken(data.token);
-      router.push('/account/');
+      router.push(next);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -38,6 +40,33 @@ export default function AccountLoginPage() {
     }
   };
 
+  return (
+    <form className="calc-form admin-login-form" onSubmit={handleSubmit}>
+      <label className="calc-field">
+        <span>Телефон</span>
+        <input
+          type="tel"
+          placeholder="+7 XXX XXX XX XX"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          required
+          autoFocus
+        />
+      </label>
+      <PasswordField label="Пароль" value={password} onChange={setPassword} required />
+      {error && <p className="calc-hint calc-hint-warning">{error}</p>}
+      <button type="submit" className="btn btn-primary calc-cta" disabled={submitting}>
+        {submitting ? 'Вход…' : 'Войти'}
+      </button>
+      <p className="calc-hint">
+        Нет аккаунта?{' '}
+        <Link href={`/account/register/?next=${encodeURIComponent(next)}`}>Зарегистрироваться</Link>
+      </p>
+    </form>
+  );
+}
+
+export default function AccountLoginPage() {
   return (
     <>
       <section className="page-hero page-hero-compact">
@@ -48,27 +77,9 @@ export default function AccountLoginPage() {
       </section>
       <section className="section">
         <div className="container">
-          <form className="calc-form admin-login-form" onSubmit={handleSubmit}>
-            <label className="calc-field">
-              <span>Телефон</span>
-              <input
-                type="tel"
-                placeholder="+7 XXX XXX XX XX"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                required
-                autoFocus
-              />
-            </label>
-            <PasswordField label="Пароль" value={password} onChange={setPassword} required />
-            {error && <p className="calc-hint calc-hint-warning">{error}</p>}
-            <button type="submit" className="btn btn-primary calc-cta" disabled={submitting}>
-              {submitting ? 'Вход…' : 'Войти'}
-            </button>
-            <p className="calc-hint">
-              Нет аккаунта? <Link href="/account/register/">Зарегистрироваться</Link>
-            </p>
-          </form>
+          <Suspense fallback={<p className="calc-hint">Загрузка…</p>}>
+            <LoginForm />
+          </Suspense>
         </div>
       </section>
     </>
