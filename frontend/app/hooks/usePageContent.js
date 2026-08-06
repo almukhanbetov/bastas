@@ -13,7 +13,7 @@ export function usePageContent(page) {
   const [content, setContent] = useState(staticContent[page]);
 
   useEffect(() => {
-    if (!API_URL) return;
+    if (API_URL === undefined) return;
     let cancelled = false;
 
     fetchPageContent(API_URL, page)

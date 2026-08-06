@@ -18,7 +18,7 @@ export default function CatalogContent() {
   const [stones, setStones] = useState(FALLBACK_STONES);
 
   useEffect(() => {
-    if (!API_URL) return;
+    if (API_URL === undefined) return;
     let cancelled = false;
     fetch(`${API_URL}/api/v1/catalog/stones`)
       .then((res) => (res.ok ? res.json() : Promise.reject()))

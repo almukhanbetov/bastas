@@ -17,7 +17,7 @@ export default function ProductsContent() {
   const [products, setProducts] = useState(FALLBACK_PRODUCTS);
 
   useEffect(() => {
-    if (!API_URL) return;
+    if (API_URL === undefined) return;
     let cancelled = false;
     fetch(`${API_URL}/api/v1/catalog/products`)
       .then((res) => (res.ok ? res.json() : Promise.reject()))

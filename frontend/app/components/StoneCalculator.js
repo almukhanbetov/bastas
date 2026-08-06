@@ -57,7 +57,7 @@ export default function StoneCalculator() {
   const [pricing, setPricing] = useState(staticPricing);
 
   useEffect(() => {
-    if (!API_URL) return;
+    if (API_URL === undefined) return;
     let cancelled = false;
 
     fetchPricingConfig(API_URL)

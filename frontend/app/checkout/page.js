@@ -26,7 +26,7 @@ export default function CheckoutPage() {
   // как был без аккаунта, так и остаётся полностью рабочим.
   useEffect(() => {
     const token = getCustomerToken();
-    if (!isTokenValid(token) || !API_URL) return;
+    if (!isTokenValid(token) || API_URL === undefined) return;
     setLoggedIn(true);
     customerFetch(API_URL, '/api/v1/me')
       .then((me) => {
@@ -45,7 +45,7 @@ export default function CheckoutPage() {
       setError('Укажите имя и телефон.');
       return;
     }
-    if (!API_URL) {
+    if (API_URL === undefined) {
       setError('Сервис оформления заказов временно недоступен.');
       return;
     }
