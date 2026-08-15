@@ -10,14 +10,20 @@ export const metadata = {
 
 export default function ThankYouPage() {
   return (
-    <main>
-      <h1>Спасибо! Заявка отправлена</h1>
+    <section className="thank-you-section">
+      <div className="container">
+        <div className="cart-empty">
+          <h1>Спасибо! Заявка отправлена</h1>
 
-      <p>
-        Наш специалист свяжется с вами для уточнения деталей заказа.
-      </p>
+          <p>
+            Наш специалист свяжется с вами для уточнения деталей заказа.
+          </p>
 
-      <Link href="/">Вернуться на главную</Link>
-    </main>
+          <Link className="btn btn-primary" href="/">
+            Вернуться на главную
+          </Link>
+        </div>
+      </div>
+    </section>
   );
 }
