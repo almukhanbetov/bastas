@@ -79,7 +79,16 @@ export default function CheckoutPage() {
         })),
       };
 
-      await createOrder(API_URL, payload, getCustomerToken());
+      const order = await createOrder(API_URL, payload, getCustomerToken());
+
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({
+        event: 'lead_submit',
+        transaction_id: String(order.id),
+        value: Number(order.totalAmount),
+        currency: 'KZT',
+      });
+
       clearCart();
       router.push('/thank-you/');
     } catch (err) {
