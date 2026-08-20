@@ -56,6 +56,21 @@ export default function CatalogContent() {
           </div>
         </div>
       </section>
+
+      <section className="section alt">
+        <div className="container">
+          <div className="section-head">
+            <div className="section-kicker">Подробнее о материалах</div>
+            <h2>Камень в Алматы по видам</h2>
+          </div>
+          <div className="tag-links">
+            <Link className="tag-link" href="/mramor-almaty/">Мрамор в Алматы</Link>
+            <Link className="tag-link" href="/granit-almaty/">Гранит в Алматы</Link>
+            <Link className="tag-link" href="/travertin-almaty/">Травертин в Алматы</Link>
+            <Link className="tag-link" href="/oniks-almaty/">Оникс в Алматы</Link>
+          </div>
+        </div>
+      </section>
     </>
   );
 }

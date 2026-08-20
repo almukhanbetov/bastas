@@ -21,6 +21,15 @@ export default function Footer() {
             </div>
           </div>
           <div>
+            <h4>Натуральный камень</h4>
+            <div className="footer-links">
+              <Link href="/mramor-almaty/">Мрамор в Алматы</Link>
+              <Link href="/granit-almaty/">Гранит в Алматы</Link>
+              <Link href="/travertin-almaty/">Травертин в Алматы</Link>
+              <Link href="/oniks-almaty/">Оникс в Алматы</Link>
+            </div>
+          </div>
+          <div>
             <h4>Контакты</h4>
             <div className="footer-links">
               <a href="tel:+77014657070">+7 (701) 465 70 70</a>

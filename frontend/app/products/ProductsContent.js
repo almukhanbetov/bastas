@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -52,6 +53,21 @@ export default function ProductsContent() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="container">
+          <div className="section-head">
+            <div className="section-kicker">Изделия из мрамора</div>
+            <h2>Подробнее по изделиям из мрамора в Алматы</h2>
+          </div>
+          <div className="tag-links">
+            <Link className="tag-link" href="/stoleshnitsy-iz-mramora/">Столешницы из мрамора</Link>
+            <Link className="tag-link" href="/lestnitsy-iz-mramora/">Лестницы из мрамора</Link>
+            <Link className="tag-link" href="/podokonniki-iz-mramora/">Подоконники из мрамора</Link>
+            <Link className="tag-link" href="/slaby-mramora/">Слэбы мрамора</Link>
           </div>
         </div>
       </section>

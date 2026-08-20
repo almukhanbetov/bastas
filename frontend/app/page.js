@@ -82,6 +82,27 @@ export default function HomePage() {
       </section>
 
       <section className="section">
+        <div className="container">
+          <div className="section-head">
+            <div className="section-kicker">Натуральный камень</div>
+            <h2>Материалы для вашего проекта в Алматы</h2>
+          </div>
+          <div className="tag-links">
+            <Link className="tag-link" href="/mramor-almaty/">Мрамор</Link>
+            <Link className="tag-link" href="/granit-almaty/">Гранит</Link>
+            <Link className="tag-link" href="/travertin-almaty/">Травертин</Link>
+            <Link className="tag-link" href="/oniks-almaty/">Оникс</Link>
+          </div>
+          <div className="tag-links" style={{ marginTop: 14 }}>
+            <Link className="tag-link" href="/stoleshnitsy-iz-mramora/">Столешницы из мрамора</Link>
+            <Link className="tag-link" href="/lestnitsy-iz-mramora/">Лестницы из мрамора</Link>
+            <Link className="tag-link" href="/podokonniki-iz-mramora/">Подоконники из мрамора</Link>
+            <Link className="tag-link" href="/slaby-mramora/">Слэбы мрамора</Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="section alt">
         <div className="container feature-layout">
           <div className="feature-image">
             <img src={feature.imageUrl} alt={feature.title} />
@@ -106,7 +127,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="section alt">
+      <section className="section">
         <div className="container">
           <div className="section-head center">
             <div className="section-kicker">{productsTeaser.subtitle}</div>

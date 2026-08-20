@@ -14,10 +14,22 @@ type CatalogHandler struct {
 	DB *pgxpool.Pool
 }
 
+// GetStones — GET /api/v1/catalog/stones, опционально ?slug=marble для одной позиции
+// (используют SEO-лендинги /mramor-almaty и т.д., чтобы не тянуть весь каталог).
 func (h *CatalogHandler) GetStones(c *gin.Context) {
-	rows, err := h.DB.Query(c.Request.Context(), `
-		SELECT id, slug, name, tag, image_url, sort_order
-		FROM stone_catalog WHERE is_active = true ORDER BY sort_order`)
+	slug := c.Query("slug")
+
+	var rows pgx.Rows
+	var err error
+	if slug != "" {
+		rows, err = h.DB.Query(c.Request.Context(), `
+			SELECT id, slug, name, tag, image_url, sort_order
+			FROM stone_catalog WHERE is_active = true AND slug = $1 ORDER BY sort_order`, slug)
+	} else {
+		rows, err = h.DB.Query(c.Request.Context(), `
+			SELECT id, slug, name, tag, image_url, sort_order
+			FROM stone_catalog WHERE is_active = true ORDER BY sort_order`)
+	}
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to load stone catalog"})
 		return
@@ -29,14 +41,29 @@ func (h *CatalogHandler) GetStones(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to read stone catalog"})
 		return
 	}
+	if items == nil {
+		items = []models.StoneCatalogItem{}
+	}
 
 	c.JSON(http.StatusOK, items)
 }
 
+// GetProducts — GET /api/v1/catalog/products, опционально ?slug=countertops для одной
+// позиции (используют SEO-лендинги изделий из мрамора).
 func (h *CatalogHandler) GetProducts(c *gin.Context) {
-	rows, err := h.DB.Query(c.Request.Context(), `
-		SELECT id, slug, name, description, image_url, sort_order
-		FROM product_types WHERE is_active = true ORDER BY sort_order`)
+	slug := c.Query("slug")
+
+	var rows pgx.Rows
+	var err error
+	if slug != "" {
+		rows, err = h.DB.Query(c.Request.Context(), `
+			SELECT id, slug, name, description, image_url, sort_order
+			FROM product_types WHERE is_active = true AND slug = $1 ORDER BY sort_order`, slug)
+	} else {
+		rows, err = h.DB.Query(c.Request.Context(), `
+			SELECT id, slug, name, description, image_url, sort_order
+			FROM product_types WHERE is_active = true ORDER BY sort_order`)
+	}
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to load product types"})
 		return
@@ -47,6 +74,9 @@ func (h *CatalogHandler) GetProducts(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to read product types"})
 		return
+	}
+	if items == nil {
+		items = []models.ProductType{}
 	}
 
 	c.JSON(http.StatusOK, items)

@@ -12,9 +12,29 @@ const manrope = Manrope({
   display: 'swap',
 });
 
+const SITE_URL = 'https://www.bastas.kz';
+
 export const metadata = {
+  metadataBase: new URL(SITE_URL),
   title: 'BAS TAS — Натуральный камень',
   description: 'Натуральный камень для интерьеров и фасадов. Продажа, производство, монтаж.',
+};
+
+// Только подтверждённые данные (см. lib/staticContent.js: contacts.info) —
+// без адреса/координат/рейтингов, которых нет в проекте.
+const ORGANIZATION_JSON_LD = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'BAS TAS',
+  url: `${SITE_URL}/`,
+  logo: `${SITE_URL}/logo.png`,
+  telephone: '+77014657070',
+  email: 'info@bastas.kz',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Алматы',
+    addressCountry: 'KZ',
+  },
 };
 
 // Устанавливает data-theme до гидрации, чтобы избежать мигания темы при загрузке.
@@ -34,6 +54,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <Script id="theme-init" strategy="beforeInteractive">
           {THEME_INIT_SCRIPT}
         </Script>
+        <script
+          id="organization-jsonld"
+          type="application/ld+json"
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(ORGANIZATION_JSON_LD) }}
+        />
       </head>
       <body>
         <noscript>

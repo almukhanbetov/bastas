@@ -1,9 +1,18 @@
+import { LANDING_SLUGS } from '@/lib/landingPages';
+
 export const dynamic = 'force-static';
 
 const SITE_URL = 'https://www.bastas.kz';
 
 export default function sitemap() {
   const lastModified = new Date();
+
+  const landingPages = LANDING_SLUGS.map((slug) => ({
+    url: `${SITE_URL}/${slug}`,
+    lastModified,
+    changeFrequency: 'weekly',
+    priority: 0.85,
+  }));
 
   return [
     {
@@ -24,6 +33,7 @@ export default function sitemap() {
       changeFrequency: 'weekly',
       priority: 0.9,
     },
+    ...landingPages,
     {
       url: `${SITE_URL}/calculator`,
       lastModified,
